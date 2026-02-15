@@ -1,0 +1,134 @@
+import PWA from "@/components/PWA.js";
+import ZoomControls from "@/components/ZoomControls.js";
+import { DBContextProvider } from "@/lib/useDBPersistentValue.js";
+import { persistValue } from "@moojor224/persistent-value";
+import { AppBar, Box, Stack, Toolbar, Typography } from "@mui/material";
+import CssBaseline from "@mui/material/CssBaseline";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import React, { createContext, useMemo, useState } from "react";
+import ReactDOM from "react-dom/client";
+import "react-tabs/style/react-tabs.css";
+import { ApiContext, TBAAPI } from "../lib/tba_api/index.js";
+import "./styles.css";
+
+const darkTheme = createTheme({
+    palette: {
+        mode: "dark"
+        // primary: { // TBA theme color
+        //     main: "#1565c0",
+        //     dark: "#1565c0"
+        // }
+    }
+});
+
+const key = await persistValue({
+    acquireMessage: "Enter a TBA API key. API keys can be generated here: https://www.thebluealliance.com/account",
+    acquireValue(message) {
+        return prompt(message);
+    },
+    key: "API_KEY",
+    optional: false,
+    validator(value) {
+        return typeof value === "string" && (!!value.match(/[a-zA-Z0-9]{32,100}/) || value === "dev");
+    }
+});
+
+if (!key.has()) {
+    throw new Error("no api key");
+}
+if (key.get() === "dev") {
+    key.set("aFw9aPt0QvDsBNKIicgTBrmJvFKbCwyBeBeKmWwfjnyjbZbcSgLLfUzKawbRGi3w");
+}
+const API_KEY = key.get()!;
+
+("#1565c0"); // primary dark
+
+const DBNAME = "FrcMatchTrackerHost";
+const STORENAME = "AppState";
+export const PersistPrefixKeyContext = createContext("");
+
+function Home() {
+    const [loaded, setLoaded] = useState(false);
+    const [loadMessage, setLoadMessage] = useState("Waiting for TheBlueAlliance API");
+
+    const api = useMemo(() => {
+        const api = new TBAAPI(API_KEY);
+        if (!key.has()) {
+            return api;
+        }
+        api.on("load", () => {
+            setLoadMessage("");
+            setLoaded(true);
+        });
+        api.on("loaderror", () => {
+            setLoadMessage("TheBlueAlliance API Not accessible. Check internet connection");
+        });
+        return api;
+    }, []);
+    return (
+        <>
+            <div hidden style={{ display: "none" }}>
+                {/* forces the zoom to be set on page load */}
+                <ZoomControls />
+            </div>
+            <ThemeProvider theme={darkTheme}>
+                {/* provide api to all children */}
+                <ApiContext value={api}>
+                    <CssBaseline />
+                    <Stack sx={{ height: "100%" }}>
+                        <Box>
+                            <AppBar position="static" sx={{ zoom: "calc(1 / var(--zoom))" }}>
+                                <Toolbar>
+                                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                                        page name
+                                    </Typography>
+                                    {/* TODO: api key button? */}
+                                    {/* <Button color="inherit">API Key</Button> */}
+                                    <PWA />
+                                </Toolbar>
+                            </AppBar>
+                        </Box>
+                        {loaded ? (
+                            // don't render site until api has loaded
+                            // once loaded is true, it won't change to false, so no risk in recreating DB connections
+                            <DBContextProvider dbName={DBNAME} storeName={STORENAME} wait={false}>
+                                {/* don't render site until DB has loaded */}
+                                <Box id="body" sx={{ flexGrow: 1, minHeight: "0" }}>
+                                    this is the app
+                                </Box>
+                            </DBContextProvider>
+                        ) : (
+                            <Box>
+                                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                                    {loadMessage}
+                                </Typography>
+                            </Box>
+                        )}
+                    </Stack>
+                </ApiContext>
+            </ThemeProvider>
+        </>
+    );
+}
+
+ReactDOM.createRoot(document.querySelector("#root")!).render(React.createElement(Home));
+
+function other() {
+    const MIN_YEAR = 1992; // oldest year on TBA website
+    const [MAX_YEAR, setMaxYear] = useState(MIN_YEAR); // max year
+    const arr = useMemo(
+        () =>
+            new Array(MAX_YEAR - MIN_YEAR + 1)
+                .fill(0)
+                .map((e, i) => i + MIN_YEAR)
+                .reverse(),
+        [MAX_YEAR]
+    );
+    <select>
+        {arr.map((e, i) => (
+            <option key={i} value={e}>
+                {e}
+            </option>
+        ))}
+    </select>;
+}
