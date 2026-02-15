@@ -22,11 +22,11 @@ try {
         ]
     });
     try {
-        fs.rmSync(path.resolve("frc-tracker-host-site"), { recursive: true });
+        fs.rmSync(path.resolve("frc-match-tracker-host-site"), { recursive: true });
     } catch {}
-    fs.mkdir(path.resolve("frc-tracker-host-site"), () => {
-        fs.writeFileSync(path.resolve("frc-tracker-host-site", "index.html"), html);
-        copy("public/**/*", "frc-tracker-host-site", function (err, files) {
+    fs.mkdir(path.resolve("frc-match-tracker-host-site"), () => {
+        fs.writeFileSync(path.resolve("frc-match-tracker-host-site", "index.html"), html);
+        copy("public/**/*", "frc-match-tracker-host-site", function (err, files) {
             if (err) throw err;
         });
     });

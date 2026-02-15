@@ -11,4 +11,4 @@
 
 ## open the output file in a browser
 
-The output file is located in the `frc-tracker-host-site` folder. It is called index.html. Open this file in your preferred web browser to use the app
+The output file is located in the `frc-match-tracker-host-site` folder. It is called index.html. Open this file in your preferred web browser to use the app

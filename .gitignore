@@ -5,4 +5,4 @@ node_modules
 dist/
 tsup-out/
 webpack-out/
-frc-tracker-host-site/
+frc-match-tracker-host-site/
