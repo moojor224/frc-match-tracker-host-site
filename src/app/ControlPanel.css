@@ -1,0 +1,13 @@
+.all-disabled {
+    cursor: not-allowed;
+    pointer-events: none;
+    user-select: none;
+}
+
+.all-disabled *:not(:has(> *)) {
+    filter: brightness(30%);
+}
+
+div.row-preview {
+    white-space: nowrap;
+}

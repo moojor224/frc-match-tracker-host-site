@@ -1,0 +1,8 @@
+div.boolean-display-dot {
+    --size: 3px;
+    margin: 0;
+    padding: 3px;
+    border-radius: 50%;
+    background-color: var(--color);
+    box-shadow: 0 0 3px 3px var(--color);
+}

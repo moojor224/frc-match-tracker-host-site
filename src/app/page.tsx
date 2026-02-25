@@ -9,7 +9,11 @@ import React, { createContext, useMemo, useState } from "react";
 import ReactDOM from "react-dom/client";
 import "react-tabs/style/react-tabs.css";
 import { ApiContext, TBAAPI } from "../lib/tba_api/index.js";
+import App from "./App.js";
 import "./styles.css";
+
+// @ts-ignore
+delete window.WebSocket;
 
 const darkTheme = createTheme({
     palette: {
@@ -94,7 +98,7 @@ function Home() {
                             <DBContextProvider dbName={DBNAME} storeName={STORENAME} wait={false}>
                                 {/* don't render site until DB has loaded */}
                                 <Box id="body" sx={{ flexGrow: 1, minHeight: "0" }}>
-                                    this is the app
+                                    <App />
                                 </Box>
                             </DBContextProvider>
                         ) : (

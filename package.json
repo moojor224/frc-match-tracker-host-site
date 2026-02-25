@@ -25,7 +25,6 @@
         "watch": "tsup --watch --onSuccess \"pnpm run pack\""
     },
     "devDependencies": {
-        "@types/node": "^25.0.9",
         "@types/react": "^19.2.10",
         "@types/react-dom": "^19.2.3",
         "css-loader": "^7.1.3",

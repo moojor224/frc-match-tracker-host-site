@@ -97,4 +97,4 @@ const javaClass = `
 `;
 
 fs.writeFileSync("out.ts", typescriptClass);
-fs.writeFileSync("out.java", javaClass);
+// fs.writeFileSync("out.java", javaClass);
